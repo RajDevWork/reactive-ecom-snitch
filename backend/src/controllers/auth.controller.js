@@ -1,7 +1,21 @@
 import userModel from "../models/user.model.js";
 import jwt from 'jsonwebtoken'
-import bycrytjs from 'bcryptjs'
 import { config } from "../config/config.js";
+
+async function sendTokenResponse(user,res,message,statusCode){
+     const token = jwt.sign({
+            id:user._id,
+            email:user.email
+        },config.JWT_SECRET,{expiresIn:'1d'})
+
+        res.cookie("token",token)
+
+        res.status(statusCode).json({
+            message,
+            success:true,
+            user
+        })
+}
 
 export const registerController = async(req,res)=>{
     const {fullname,email,contact,password} = req.body
@@ -19,34 +33,16 @@ export const registerController = async(req,res)=>{
             })
         }
 
-        //hash password
-        const hashedPassowrd = bycrytjs.hash(password,10)
-
         //create user
         const user = await userModel.create({
             fullname,
             email,
             contact,
-            password:hashedPassowrd
+            password
         })
 
-        //create token
-        const token = jwt.sign({
-            id:user._id,
-            email:user.email
-        },config.JWT_SECRET,{expiresIn:'1d'})
-
-        res.cookie("token",token)
-
-        res.status(201).json({
-            message:"User created successfully",
-            user
-        })
-        
-
-
-
-
+        //create token and response send
+        await sendTokenResponse(user,res,'User registered successfully',201)
         
     } catch (error) {
         res.statu(500).json({
