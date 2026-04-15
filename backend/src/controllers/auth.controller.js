@@ -42,11 +42,13 @@ export const registerController = async(req,res)=>{
             role: isSeller ? "seller" : "buyer"
         })
 
+        const {password:_,...others} = user._doc
+
         //create token and response send
-        await sendTokenResponse(user,res,'User registered successfully',201)
+        await sendTokenResponse(others,res,'User registered successfully',201)
         
     } catch (error) {
-        res.statu(500).json({
+        res.status(500).json({
             message:"Server Error"
         })
     }
