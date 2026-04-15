@@ -1,0 +1,4 @@
+backend - 
+npm i -D typescript tsx
+npm i express dotenv jsonwebtoken cookie-parser mongoose morgan
+npm i -D @types/express @types/mongoose @types/node
