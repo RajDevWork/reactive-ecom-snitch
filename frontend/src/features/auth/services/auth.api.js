@@ -21,3 +21,15 @@ export const register = async(fullname,email,contact,password,isSeller)=>{
         }
 
 }
+
+export const login = async (email,password)=>{
+    try {
+        const response = await authAPI.post("/login",{
+            email,
+            password
+        })
+        return response.data
+    } catch (error) {
+        return error.message
+    }
+}

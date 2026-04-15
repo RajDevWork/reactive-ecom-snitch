@@ -56,6 +56,34 @@ export const registerController = async(req,res)=>{
 
 }
 
-export const loginController = async(req,res)=>{
 
+export const loginController = async(req,res)=>{
+    const {email,password} = req.body
+    
+    try {
+
+        const user = await userModel.findOne({email}).select("+password")
+        if(!user){
+            return res.status(401).json({
+                message:'Invalid email or password'
+            })
+        }
+        const isMatch = await user.comparePassword(password)
+        if(!isMatch){
+             return res.status(401).json({
+                message:'Invalid email or password'
+            })
+        }
+        const {password:_,...others} = user._doc
+
+        //create token and response send
+        await sendTokenResponse(others,res,'User loggedin successfully',200)
+
+
+        
+    } catch (error) {
+        res.status(401).json({
+            message:'Invalid email or password'
+        })
+    }
 }
