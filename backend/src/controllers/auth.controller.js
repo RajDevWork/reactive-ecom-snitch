@@ -87,3 +87,16 @@ export const loginController = async(req,res)=>{
         })
     }
 }
+
+export const googleAuthController = async(req,res)=>{
+    // This controller will be called after successful authentication with Google
+    // You can access the user profile returned by Google in req.user
+    // For example, you can find or create a user in your database
+    // and then send a response to the client   
+    console.log(req.user)
+    // res.json({
+    //     message:"Google authentication successful",
+    //     user:req.user
+    // })
+    res.redirect("http://localhost:5173")
+}

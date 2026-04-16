@@ -202,8 +202,13 @@ const Register = () => {
               <Link to="/login" className="text-[#DAA520] hover:text-[#B8860B] font-medium transition-colors">
                 Sign in
               </Link>
-            </p>
+            </p><br />
+
+            <a href="/api/auth/google" className="text-[#DAA520] hover:text-[#B8860B] font-medium transition-colors">
+              Continue with Google
+            </a>
           </div>
+
         </div>
       </div>
     </div>
