@@ -88,6 +88,8 @@ export const loginController = async(req,res)=>{
     }
 }
 
+
+//google auth controller to handle the response from google after successful authentication
 export const googleAuthController = async(req,res)=>{
     // This controller will be called after successful authentication with Google
     // You can access the user profile returned by Google in req.user

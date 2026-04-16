@@ -20,7 +20,10 @@ app.use(cors({
     credentials:true
 }))
 
+//google oauth strategy setup
 app.use(passport.initialize())
+
+// Configure the Google strategy for use by Passport.
 passport.use(new GoogleStrategy({
     clientID:config.GOOGLE_CLIENT_ID,
     clientSecret:config.GOOGLE_CLIENT_SECRET,
