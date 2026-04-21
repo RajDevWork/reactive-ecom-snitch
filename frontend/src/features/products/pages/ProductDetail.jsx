@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
 import { useProduct } from '../hooks/useProduct';
 import { useCart } from '../../cart/hook/useCart';
+import { useSelector } from 'react-redux';
 
 const ProductDetail = () => {
     const { productId } = useParams();
@@ -11,7 +12,10 @@ const ProductDetail = () => {
     const navigate = useNavigate();
     const { handleGetProductById } = useProduct();
     const { handleAddItem } = useCart()
+    const user = useSelector(state => state.auth.user)
 
+
+    // console.log("user = ",user)
 
 
 
@@ -270,7 +274,15 @@ const ProductDetail = () => {
                             {/* Actions */}
                             <div className="flex flex-col gap-4 mt-auto">
                                 <button
-                                    className="w-full cursor-pointer active:scale-95 py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300"
+                                    disabled={!user}
+                                    className={`
+                                        w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium
+                                        transition-all duration-300
+                                        ${user 
+                                        ? "cursor-pointer active:scale-95" 
+                                        : "cursor-not-allowed opacity-40"
+                                        }
+                                    `}
                                     style={{
                                         backgroundColor: '#1b1c1a',
                                         color: '#fbf9f6',

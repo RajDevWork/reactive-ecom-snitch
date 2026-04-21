@@ -20,7 +20,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission here
-    console.log(formData);
+    // console.log(formData);
     await handleLogin(formData)
     navigate("/")
   };
@@ -111,7 +111,7 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#DAA520] to-[#B8860B] text-white font-semibold py-3 px-4 rounded-xl hover:from-[#B8860B] hover:to-[#DAA520] focus:outline-none focus:ring-4 focus:ring-[#DAA520]/30 transform hover:scale-[1.02] transition-all duration-200 shadow-lg"
+              className="w-full cursor-pointer active:scale-90 bg-gradient-to-r from-[#DAA520] to-[#B8860B] text-white font-semibold py-3 px-4 rounded-xl hover:from-[#B8860B] hover:to-[#DAA520] focus:outline-none focus:ring-4 focus:ring-[#DAA520]/30 transform hover:scale-[1.02] transition-all duration-200 shadow-lg"
             >
               Sign In
             </button>
