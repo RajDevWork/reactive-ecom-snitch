@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router';
 import { useCart } from '../hook/useCart';
 
 const Cart = () => {
-  const cartItems = useSelector(state => state.cart.items) || []; // ✅ FIX
+  const cartItems = useSelector(state => state.cart.items) || [];
   const user = useSelector(state => state.auth.user);
 
   // console.log("user = ",user)

@@ -3,24 +3,37 @@ import { useSelector } from 'react-redux';
 import { useProduct } from '../hooks/useProduct';
 import { Link } from 'react-router';
 import { useNavigate } from 'react-router';
-
+import { useCart } from '../../cart/hook/useCart';
 const Home = () => {
+    
     const products = useSelector(state => state.product.products);
     const user = useSelector(state => state.auth.user);
     const { handleGetAllProducts } = useProduct();
     const cartItems = useSelector(state => state.cart.items);
 
+    const {
+        handleGetCart,
+      } = useCart();
+        
     const navigate = useNavigate();
     const [search, setSearch] = useState('');
 
     useEffect(() => {
         handleGetAllProducts();
+        handleGetCart();
     }, []);
 
     const filteredProducts = products?.filter(product =>
         product.title.toLowerCase().includes(search.toLowerCase()) ||
         product.description.toLowerCase().includes(search.toLowerCase())
     );
+
+     // Suggestions (top 5)
+    const suggestions = products
+        ?.filter(p =>
+            p.title.toLowerCase().includes(search.toLowerCase())
+        )
+        .slice(0, 5);
 
     return (
         <>
@@ -137,14 +150,39 @@ const Home = () => {
                         </span>
 
                         {/* Clear */}
-                        {search && (
-                            <button
-                                onClick={() => setSearch('')}
-                                className="absolute right-5 top-1/2 -translate-y-1/2 text-[#aaa] hover:text-black transition"
-                            >
-                                ✕
-                            </button>
-                        )}
+                        {/* Clear */}
+                            {search && (
+                                <button
+                                    onClick={() => setSearch('')}
+                                    className="absolute right-5 top-1/2 -translate-y-1/2 text-[#aaa]"
+                                >
+                                    ✕
+                                </button>
+                            )}
+
+                            {/* Suggestions */}
+                            {search && suggestions?.length > 0 && (
+                                <div className="absolute w-full mt-3 bg-white border rounded-2xl shadow-lg overflow-hidden z-50">
+                                    {suggestions.map(item => (
+                                        <div
+                                            key={item._id}
+                                            onClick={() => navigate(`/product/${item._id}`)}
+                                            className="flex items-center gap-4 px-4 py-3 cursor-pointer hover:bg-gray-100"
+                                        >
+                                            <img
+                                                src={item.images?.[0]?.url}
+                                                className="w-10 h-12 object-cover rounded"
+                                            />
+                                            <div>
+                                                <p className="text-sm">{item.title}</p>
+                                                <p className="text-xs text-gray-500">
+                                                    {item.price?.currency} {item.price?.amount}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                     </div>
                     </div>
 
