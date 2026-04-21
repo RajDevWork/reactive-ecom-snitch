@@ -204,9 +204,9 @@ const Register = () => {
               </Link>
             </p><br />
 
-            <a href="/api/auth/google" className="text-[#DAA520] hover:text-[#B8860B] font-medium transition-colors">
+            {/* <a href="/api/auth/google" className="text-[#DAA520] hover:text-[#B8860B] font-medium transition-colors">
               Continue with Google
-            </a>
+            </a> */}
           </div>
 
         </div>

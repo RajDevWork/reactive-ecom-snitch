@@ -105,7 +105,7 @@ const ProductDetail = () => {
         );
     }
 
-    console.log(product)
+    // console.log(product)
 
     // Fallbacks
     const displayImages = (activeVariant?.images && activeVariant.images.length > 0)
@@ -270,7 +270,7 @@ const ProductDetail = () => {
                             {/* Actions */}
                             <div className="flex flex-col gap-4 mt-auto">
                                 <button
-                                    className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300"
+                                    className="w-full cursor-pointer active:scale-95 py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300"
                                     style={{
                                         backgroundColor: '#1b1c1a',
                                         color: '#fbf9f6',

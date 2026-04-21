@@ -1,6 +1,7 @@
 import { setError, setLoading, setUser } from "../state/auth.slice"
-import { register, login, getMe } from "../services/auth.api"
+import { register, login, getMe,logout  } from "../services/auth.api"
 import { useDispatch } from "react-redux"
+import { setItems } from "../../cart/state/cart.slice";
 
 
 
@@ -35,8 +36,23 @@ export const useAuth = () => {
             dispatch(setLoading(false))
         }
     }
+
+    async function handleLogout() {
+        try {
+            await logout();
+
+            // redux clean
+            dispatch(setUser(null));
+            dispatch(setItems([]));
+
+            
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
     
 
-    return { handleRegister, handleLogin, handleGetMe }
+    return { handleRegister, handleLogin, handleGetMe,handleLogout }
 
 }
