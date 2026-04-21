@@ -9,6 +9,7 @@ const cartApiInstance = axios.create({
 // 🟢 Get full cart
 export const getCart = async () => {
     const response = await cartApiInstance.get("/");
+    // console.log("response.data = ",response.data)
     return response.data;
 };
 

@@ -18,6 +18,9 @@ export const useCart = () => {
         try {
             const data = await getCart();
             dispatch(setItems(data.items));
+
+            // console.log("data.items = ",data.cart.items)
+            // console.log("data.items2 = ",data)
             return data;
         } catch (err) {
             console.log(err);
