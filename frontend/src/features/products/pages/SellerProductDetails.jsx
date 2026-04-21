@@ -326,7 +326,7 @@ const SellerProductDetails = () => {
                     <div>
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/*,image/avif"
                         multiple
                         onChange={handleImageUpload}
                         className="block w-full text-sm text-[#6e6258]
