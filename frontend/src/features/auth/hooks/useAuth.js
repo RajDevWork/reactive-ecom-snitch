@@ -35,6 +35,7 @@ export const useAuth = () => {
             dispatch(setLoading(false))
         }
     }
+    
 
     return { handleRegister, handleLogin, handleGetMe }
 

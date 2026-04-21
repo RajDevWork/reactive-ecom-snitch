@@ -8,6 +8,7 @@ const Home = () => {
     const products = useSelector(state => state.product.products);
     const user = useSelector(state => state.auth.user);
     const { handleGetAllProducts } = useProduct();
+    const cartItems = useSelector(state => state.cart.items);
 
     const navigate = useNavigate();
     const [search, setSearch] = useState('');
@@ -37,8 +38,40 @@ const Home = () => {
                     </Link>
 
                     <div className="flex gap-6 items-center text-xs uppercase tracking-[0.3em] text-[#7A6E63]">
+
+                        {/* Cart */}
+                        <div
+                            onClick={() => navigate('/cart')}
+                            className="relative cursor-pointer group"
+                        >
+                            {/* Icon */}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="w-6 h-6 text-[#1b1c1a] group-hover:text-[#C9A96E] transition"
+                            >
+                                <path d="M7 4H5L4 6H2V8H3L6.6 15.59L5.25 18.04C5.09 18.32 5 18.65 5 19C5 20.1 5.9 21 7 21H19V19H7.42C7.28 19 7.17 18.89 7.17 18.75L7.2 18.63L8.1 17H15.55C16.3 17 16.96 16.59 17.3 15.97L20.88 9.5C20.95 9.34 21 9.17 21 9C21 8.45 20.55 8 20 8H6.21L5.27 6H7V4ZM7 23C5.9 23 5 22.1 5 21C5 19.9 5.9 19 7 19C8.1 19 9 19.9 9 21C9 22.1 8.1 23 7 23ZM17 23C15.9 23 15 22.1 15 21C15 19.9 15.9 19 17 19C18.1 19 19 19.9 19 21C19 22.1 18.1 23 17 23Z"/>
+                            </svg>
+
+                            {/* Badge */}
+                            {cartItems?.length > 0 && (
+                                <span className="
+                                    absolute -top-2 -right-2
+                                    bg-[#C9A96E] text-white
+                                    text-[10px] font-medium
+                                    w-5 h-5 flex items-center justify-center
+                                    rounded-full
+                                    shadow-sm
+                                ">
+                                    {cartItems?.length}
+                                </span>
+                            )}
+                        </div>
+
                         {user ? (
                             <>
+
                                 <span className="text-[#1b1c1a]">{user.fullname}</span>
                                 {user.role === 'seller' && (
                                     <Link to="/seller/dashboard" className="hover:text-[#C9A96E]">Dashboard</Link>

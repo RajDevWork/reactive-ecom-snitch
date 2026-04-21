@@ -1,18 +1,79 @@
-import { addItem } from "../service/cart.api"
-import { useDispatch } from "react-redux"
-import { addItem as addItemToCart } from "../state/cart.slice"
+import {
+    addItem,
+    getCart,
+    updateQuantity,
+    removeItem,
+    clearCart
+} from "../service/cart.api";
 
+import { useDispatch } from "react-redux";
+import { setItems } from "../state/cart.slice";
 
 export const useCart = () => {
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
-    async function handleAddItem({ productId, variantId }) {
-        const data = await addItem({ productId, variantId })
-
-        return data
+    // 🟢 Fetch Cart
+    async function handleGetCart() {
+        try {
+            const data = await getCart();
+            dispatch(setItems(data.items));
+            return data;
+        } catch (err) {
+            console.log(err);
+        }
     }
 
-    return { handleAddItem }
+    // 🟢 Add Item
+    async function handleAddItem({ productId, variantId }) {
+        try {
+            const data = await addItem({ productId, variantId });
 
-}
+            // backend se updated cart aayega
+            dispatch(setItems(data.items));
+
+            return data;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    // 🟢 Increase / Decrease Quantity
+    async function handleUpdateQuantity({ itemId, quantity }) {
+        try {
+            const data = await updateQuantity({ itemId, quantity });
+            dispatch(setItems(data.items));
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    // 🟢 Remove Item
+    async function handleRemoveItem(itemId) {
+        try {
+            const data = await removeItem(itemId);
+            dispatch(setItems(data.items));
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    // 🟢 Clear Cart
+    async function handleClearCart() {
+        try {
+            const data = await clearCart();
+            dispatch(setItems([]));
+            return data;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    return {
+        handleGetCart,
+        handleAddItem,
+        handleUpdateQuantity,
+        handleRemoveItem,
+        handleClearCart
+    };
+};
