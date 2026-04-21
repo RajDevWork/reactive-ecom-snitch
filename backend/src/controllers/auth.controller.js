@@ -1,104 +1,124 @@
 import userModel from "../models/user.model.js";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken"
 import { config } from "../config/config.js";
 
-async function sendTokenResponse(user,res,message,statusCode){
-     const token = jwt.sign({
-            id:user._id,
-            email:user.email
-        },config.JWT_SECRET,{expiresIn:'1d'})
 
-        res.cookie("token",token)
+async function sendTokenResponse(user, res, message) {
 
-        res.status(statusCode).json({
-            message,
-            success:true,
-            user
-        })
+    const token = jwt.sign({
+        id: user._id,
+    }, config.JWT_SECRET, {
+        expiresIn: "7d"
+    })
+
+    res.cookie("token", token)
+
+    res.status(200).json({
+        message,
+        success: true,
+        user: {
+            id: user._id,
+            email: user.email,
+            contact: user.contact,
+            fullname: user.fullname,
+            role: user.role
+        }
+    })
+
 }
 
-export const registerController = async(req,res)=>{
-    const {fullname,email,contact,password,isSeller} = req.body
-    try {
 
+export const register = async (req, res) => {
+    const { email, contact, password, fullname, isSeller } = req.body;
+
+    try {
         const existingUser = await userModel.findOne({
-            $or:[
-                {email},
-                {contact}
+            $or: [
+                { email },
+                { contact }
             ]
         })
-        if(existingUser){
-            res.status(409),json({
-                message:"User with email or contact already exists"
-            })
+
+        if (existingUser) {
+            return res.status(400).json({ message: "User with this email or contact already exists" });
         }
 
-        //create user
         const user = await userModel.create({
-            fullname,
             email,
             contact,
             password,
+            fullname,
             role: isSeller ? "seller" : "buyer"
         })
 
-        const {password:_,...others} = user._doc
+        await sendTokenResponse(user, res, "User registered successfully")
 
-        //create token and response send
-        await sendTokenResponse(others,res,'User registered successfully',201)
-        
     } catch (error) {
-        res.status(500).json({
-            message:"Server Error"
+        console.log(error)
+        return res.status(500).json({ message: "Server error" });
+    }
+}
+
+export const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+        return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+        return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    await sendTokenResponse(user, res, "User logged in successfully")
+}
+
+export const googleCallback = async (req, res) => {
+    const { id, displayName, emails, photos } = req.user
+    const email = emails[ 0 ].value;
+    const profilePic = photos[ 0 ].value;
+
+
+    let user = await userModel.findOne({
+        email
+    })
+
+    if (!user) {
+        user = await userModel.create({
+            email,
+            googleId: id,
+            fullname: displayName,
         })
     }
 
 
+    const token = jwt.sign({
+        id: user._id,
+    }, config.JWT_SECRET, {
+        expiresIn: "7d"
+    })
+
+    res.cookie("token", token)
+
+    res.redirect("http://localhost:5173/")
 }
 
+export const getMe = async (req, res) => {
+    const user = req.user;
 
-export const loginController = async(req,res)=>{
-    const {email,password} = req.body
-    
-    try {
-
-        const user = await userModel.findOne({email}).select("+password")
-        if(!user){
-            return res.status(401).json({
-                message:'Invalid email or password'
-            })
+    res.status(200).json({
+        message: "User fetched successfully",
+        success: true,
+        user: {
+            id: user._id,
+            email: user.email,
+            contact: user.contact,
+            fullname: user.fullname,
+            role: user.role
         }
-        const isMatch = await user.comparePassword(password)
-        if(!isMatch){
-             return res.status(401).json({
-                message:'Invalid email or password'
-            })
-        }
-        const {password:_,...others} = user._doc
-
-        //create token and response send
-        await sendTokenResponse(others,res,'User loggedin successfully',200)
-
-
-        
-    } catch (error) {
-        res.status(401).json({
-            message:'Invalid email or password'
-        })
-    }
-}
-
-
-//google auth controller to handle the response from google after successful authentication
-export const googleAuthController = async(req,res)=>{
-    // This controller will be called after successful authentication with Google
-    // You can access the user profile returned by Google in req.user
-    // For example, you can find or create a user in your database
-    // and then send a response to the client   
-    console.log(req.user)
-    // res.json({
-    //     message:"Google authentication successful",
-    //     user:req.user
-    // })
-    res.redirect("http://localhost:5173")
+    })
 }
